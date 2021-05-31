@@ -25,11 +25,8 @@ module.exports.deleteCard = (req, res) => {
     .orFail(new Error('PageNotFound'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.message === 'PageNotFound') {
+      if (err.message === 'PageNotFound' || err.name === 'CastError') {
         res.status(404).send({ message: 'Карточка не найдена' });
-      }
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
       }
       res.status(500).send({ message: 'Произошла ошибка' });
     });
