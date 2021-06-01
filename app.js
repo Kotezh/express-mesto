@@ -1,3 +1,5 @@
+// npm run lint не выдает ошибок. Прикрепляю скриншот - http://joxi.ru/v29pz8RURG3Pvm
+
 const express = require('express');
 
 const { PORT = 3000 } = process.env;
