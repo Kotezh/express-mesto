@@ -12,6 +12,26 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
+module.exports.getUserMe = (req, res, next) => {
+  const { userId } = req.user._id;
+  return User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw new Error('PageNotFound');
+      }
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new RequestError('Переданы некорректные данные');
+      }
+      if (err.message === 'PageNotFound') {
+        throw new NotFoundError('Пользователь не найден');
+      }
+    })
+    .catch(next);
+};
+
 module.exports.getUser = (req, res, next) => {
   const { userId } = req.user._id;
   return User.findById(userId)
@@ -59,7 +79,7 @@ module.exports.updateUser = (req, res, next) => {
       name: req.body.name,
       about: req.body.about,
     },
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((user) => {
       if (!user) {
@@ -82,7 +102,7 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar: req.body.avatar },
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((user) => {
       if (!user) {

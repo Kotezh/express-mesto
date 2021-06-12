@@ -10,6 +10,7 @@ const users = require('./routes/users');
 const cards = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/not-found-err');
 
 const app = express();
 
@@ -42,7 +43,7 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/', users);
 app.use('/', cards);
-app.use('/', (req, res) => { res.status(404).send('Данные не найдены'); });
+app.use('/', () => { throw new NotFoundError('Данные не найдены'); });
 app.use(errors());
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
